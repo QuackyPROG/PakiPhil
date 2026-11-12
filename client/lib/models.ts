@@ -7,10 +7,10 @@ export const fieldValueSchema = z.object({
   confidence: z.number().min(0).max(1).optional(),
   history: z.array(z.object({ value: z.string(), source: z.string(), scannedAt: z.string() })).optional(),
 });
-const fields = (keys: string[]) => z.object(Object.fromEntries(keys.map(key => [key, fieldValueSchema.optional()])));
-export const personalKeys = ["firstName", "middleName", "lastName", "suffix", "sex", "birthDate", "birthPlace", "civilStatus", "citizenship", "mobile", "email", "fatherName", "motherMaidenName", "spouseName"];
-export const addressKeys = ["houseNo", "street", "barangay", "city", "province", "zip"];
-export const idKeys = ["philsysPcn", "tin", "sss", "pagibigMid", "philhealthPin", "driversLicense", "driversLicenseExpiry"];
+const fields = <T extends readonly string[]>(keys: T) => z.object(Object.fromEntries(keys.map(key => [key, fieldValueSchema.optional()])) as { [K in T[number]]: z.ZodOptional<typeof fieldValueSchema> });
+export const personalKeys = ["firstName", "middleName", "lastName", "suffix", "sex", "birthDate", "birthPlace", "civilStatus", "citizenship", "mobile", "email", "fatherName", "motherMaidenName", "spouseName"] as const;
+export const addressKeys = ["houseNo", "street", "barangay", "city", "province", "zip"] as const;
+export const idKeys = ["philsysPcn", "tin", "sss", "pagibigMid", "philhealthPin", "driversLicense", "driversLicenseExpiry"] as const;
 export const recordSchema = z.object({
   version: z.literal(1),
   core: fields(personalKeys).extend({ address: fields(addressKeys).optional(), ids: fields(idKeys).optional() }),
@@ -35,7 +35,7 @@ export function entries(record: PersonalRecord): [string, FieldValue][] {
   for (const [key, value] of Object.entries(record.core)) {
     if (!value) continue;
     if ("value" in value) result.push([`core.${key}`, value as FieldValue]);
-    else for (const [nested, field] of Object.entries(value)) if (field) result.push([`core.${key}.${nested}`, field]);
+    else for (const [nested, field] of Object.entries(value)) if (field) result.push([`core.${key}.${nested}`, fieldValueSchema.parse(field)]);
   }
   for (const group of ["extra", "formSpecific"] as const)
     for (const [key, value] of Object.entries(record[group])) result.push([`${group}.${key}`, value]);

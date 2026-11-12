@@ -23,7 +23,8 @@ export async function renderFile(file: File): Promise<FormPage[]> {
   if (original.getPageCount() > 3) throw new Error("The hackathon build supports forms with 1–3 pages. Split this PDF first.");
   const hasFields = original.getForm().getFields().length > 0;
   const pdfjs = await import("pdfjs-dist"); pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  const document = await pdfjs.getDocument({ data: bytes }).promise;
+  const loading = pdfjs.getDocument({ data: bytes });
+  const document = await loading.promise;
   try {
     const result: FormPage[] = [];
     for (let number = 1; number <= document.numPages; number++) {
@@ -35,12 +36,13 @@ export async function renderFile(file: File): Promise<FormPage[]> {
       if (hasFields) for (const annotation of await page.getAnnotations()) {
         if (annotation.subtype !== "Widget" || !annotation.fieldName || annotation.readOnly) continue;
         if (!["Tx", "Btn"].includes(annotation.fieldType) || annotation.pushButton || annotation.radioButton) continue;
-        const [x1, y1, x2, y2] = viewport.convertToViewportRectangle(annotation.rect);
+        const [x1, y1] = viewport.convertToViewportPoint(annotation.rect[0], annotation.rect[1]);
+        const [x2, y2] = viewport.convertToViewportPoint(annotation.rect[2], annotation.rect[3]);
         const box: FormField["box"] = [Math.min(y1,y2)/viewport.height*1000, Math.min(x1,x2)/viewport.width*1000, Math.max(y1,y2)/viewport.height*1000, Math.max(x1,x2)/viewport.width*1000];
         fields.push({ id: `p${number}-${fields.length}`, label: annotation.alternativeText || annotation.fieldName, box, type: annotation.fieldType === "Btn" ? "checkbox" : "text", status: "red" });
       }
       result.push({ number, image: canvas.toDataURL("image/png"), width: viewport.width, height: viewport.height, fields });
     }
     return result;
-  } finally { await document.destroy(); }
+  } finally { await loading.destroy(); }
 }
