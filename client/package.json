@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "predev": "node scripts/pdf-worker.mjs",
+    "prebuild": "node scripts/pdf-worker.mjs",
+    "postinstall": "node scripts/pdf-worker.mjs"
   },
   "dependencies": {
     "@google/genai": "^3.2.0",
