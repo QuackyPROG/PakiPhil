@@ -1,4 +1,8 @@
 import "server-only";
+import { EnvHttpProxyAgent, setGlobalDispatcher } from "undici";
+// Honor corporate/development proxy settings without changing deployment defaults.
+if (process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.https_proxy || process.env.http_proxy)
+  setGlobalDispatcher(new EnvHttpProxyAgent());
 export class ApiError extends Error {
   constructor(message: string, public status = 502) { super(message); }
 }
