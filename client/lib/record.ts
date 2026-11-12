@@ -7,7 +7,7 @@ export function mergeRecord(record: PersonalRecord, fields: [string, FieldValue]
   for (const [key, incoming] of fields) {
     const previous = saved.get(key);
     if (previous && previous.value !== incoming.value) conflicts.push({ key, previous, incoming });
-    else merged = putField(merged, key, previous ?? incoming);
+    else { merged = putField(merged, key, previous ?? incoming); saved.set(key, previous ?? incoming); }
   }
   return { record: merged, conflicts };
 }
@@ -25,7 +25,7 @@ export function computed(record: PersonalRecord): Record<string, string> {
   const name = ["firstName", "middleName", "lastName", "suffix"].map(k => values.get(`core.${k}`)).filter(Boolean).join(" ");
   if (name) result["computed.fullName"] = name;
   const date = values.get("core.birthDate");
-  if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+  if (date && /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(date)) && new Date(date).toISOString().slice(0, 10) === date) {
     const [y, m, d] = date.split("-").map(Number);
     const [ty, tm, td] = today.split("-").map(Number);
     const age = ty - y - (tm < m || (tm === m && td < d) ? 1 : 0);

@@ -56,3 +56,13 @@ test("export creates a readable page and rejects unexportable text", async () =>
   assert.equal(pdf.getPageCount(), 1);
   await assert.rejects(exportPdf([{ ...page,fields:[{ ...page.fields[0],value:"😀" }] }], {}), /cannot export/);
 });
+
+test("repeated fields within one extraction also require conflict review", () => {
+  const result = mergeRecord(emptyRecord(), [["core.firstName", makeValue("Juan")], ["core.firstName", makeValue("John")]]);
+  assert.equal(result.record.core.firstName?.value, "Juan");
+  assert.equal(result.conflicts.length, 1);
+});
+test("invalid calendar dates never produce a computed age", () => {
+  const record = putField(emptyRecord(), "core.birthDate", makeValue("2004-02-31"));
+  assert.equal(computed(record)["computed.age"], undefined);
+});
