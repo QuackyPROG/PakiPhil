@@ -1,6 +1,7 @@
 import { get, set } from "idb-keyval";
 import { chunks, pollOcr, post, uploadOcr } from "./api";
 import { entries, formFieldSchema, type FormField, type PersonalRecord } from "./models";
+import { recordPaths } from "./extraction";
 import { computed } from "./record";
 import { renderFile, type FormPage } from "./pdf";
 import { z } from "zod";
@@ -13,13 +14,13 @@ export async function mapPage(page: FormPage, record: PersonalRecord): Promise<F
   for (let offset = 0; offset < page.fields.length; offset += 8) {
     const batch = page.fields.slice(offset, offset + 8);
     const mapped = mappingsSchema.parse(await post("/api/map-fields", {
-      labels: batch.map(f => f.label), recordKeys: Object.keys(values).filter(k => !k.startsWith("formSpecific.")),
+      labels: batch.map(f => f.label), recordKeys: [...new Set([...recordPaths, ...Object.keys(values).filter(k => !k.startsWith("formSpecific."))])],
       formSpecificKeys: Object.keys(record.formSpecific).map(k => `formSpecific.${k}`),
     }));
     fields.push(...batch.map((field, i) => {
       const mapping = mapped.mappings[i];
       const value = mapping.recordKey ? values[mapping.recordKey] : undefined;
-      return { ...field, ...mapping, value, status: value ? mapping.status : "red",
+      return { ...field, ...mapping, value: field.type === "checkbox" ? undefined : value, status: field.type === "checkbox" ? "yellow" : value ? mapping.status : "red",
         reason: mapping.recordKey?.startsWith("formSpecific.") ? `Last time: ${value} — same?` : mapping.reason };
     }));
   }
