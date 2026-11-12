@@ -40,3 +40,17 @@ test("mobile home fits viewport and file type errors are actionable", async ({ p
   await page.locator('input[type="file"]').first().setInputFiles({ name: "bad.txt", mimeType: "text/plain", buffer: Buffer.from("bad") });
   await expect(page.locator(".error[role=alert]")).toContainText("Use a PDF");
 });
+test("edited extracted sample values are saved and empty edits are rejected", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Gawin ang record ko" }).click();
+  await page.getByRole("button", { name: "Try a sample ID", exact: true }).click();
+  await page.getByRole("button", { name: "Extract record with Lumen AI" }).click();
+  const name = page.locator("label").filter({ has: page.getByText("firstName", { exact: true }) }).getByRole("textbox");
+  await name.fill(""); await name.press("Tab");
+  await expect(page.locator(".error[role=alert]")).toContainText("Enter a value");
+  await expect(name).toHaveValue("Juan");
+  await name.fill("John"); await name.press("Tab");
+  await expect(page.getByRole("status").first()).toContainText("Sample correction saved locally");
+  await page.getByRole("button", { name: "Confirm and save 10 values" }).click();
+  await expect(page.locator("input").filter({ visible: true }).first()).toHaveValue("John");
+});
