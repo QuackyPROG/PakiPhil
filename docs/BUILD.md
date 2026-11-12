@@ -6,21 +6,23 @@ Dependency lockfile changes may exceed that limit.
 
 ## Delivery sequence
 
-- [ ] Validated personal record and form models; IndexedDB persistence.
-- [ ] Server-only Lumen OCR upload, polling, and correction adapters.
-- [ ] Validated extraction, mapping, and Gemini detection routes.
-- [ ] Record upload/review, conflicts, import/export, and deletion.
-- [ ] PDF/image rendering, form analysis, review, and PDF export.
-- [ ] Signature, answer positioning, mascot, and speech.
-- [ ] Explicit sample demo and watermarked sample documents.
-- [ ] Type check, lint, production build, and workflow checks.
+- [x] Validated personal record and form models; IndexedDB persistence.
+- [x] Server-only Lumen OCR upload, polling, and correction adapters.
+- [x] Validated extraction, mapping, and Gemini detection routes.
+- [x] Record upload/review, conflicts, import/export, and deletion.
+- [x] PDF/image rendering, form analysis, review, and PDF export.
+- [x] Signature, answer positioning, mascot, and speech.
+- [x] Explicit sample demo and watermarked sample documents.
+- [x] Type check, lint, production build, unit tests, and sample browser workflow checks.
+- [ ] Full live acceptance and official-form rehearsal (provider configuration required).
 
 ## External prerequisites
 
-Live Lumen authentication, base URLs, and AI Chat session/message contracts are not
-specified in the PRD. Confirm against the event documentation before claiming live
-integration. No production host or AI instance has been provisioned by this build.
-Use sample documents for the demo. No upload is silently replaced by sample data.
+The supplied sandbox documentation confirmed authentication, the staging origin,
+and session/message contracts. Live OCR upload/read/correction passed. The available
+AI instance refuses extraction; Gemini credentials are absent. See INTEGRATION.md.
+No production host has been provisioned. Sample mode is explicit and never silently
+replaces a live upload. Full live acceptance remains blocked on provider configuration.
 
 ## Scope
 
