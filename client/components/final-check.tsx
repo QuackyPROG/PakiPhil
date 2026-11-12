@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { entries, makeValue, putField, type FormField, type PersonalRecord } from "@/lib/models";
+import { VoiceAnswer } from "./voice-answer";
 import { post } from "@/lib/api";
 export function FinalCheck({ fields, record, onChange, onRecord, onAsk }: {
   fields: FormField[]; record: PersonalRecord; onChange: (f: FormField) => void;
@@ -29,7 +30,8 @@ export function FinalCheck({ fields, record, onChange, onRecord, onAsk }: {
       <form onSubmit={e => { e.preventDefault(); const data = new FormData(e.currentTarget); void confirm(field, String(data.get("value") ?? "false"), data.get("remember") === "on"); }}>
         {field.type === "checkbox" ? <label className="inline"><input name="value" type="checkbox" value="true" defaultChecked={field.value === "true"} />Check this option</label>
           : ["signature", "photo"].includes(field.type) ? <select name="value" defaultValue={field.value || "skip"}><option value="skip">Leave blank</option>{(field.type === "signature" ? record.assets.signaturePng : record.assets.photoPng) && <option value="asset">Use saved {field.type}</option>}</select>
-          : <input aria-label={`Answer for ${field.label}`} name="value" defaultValue={field.value ?? ""} required />}
+          : <input id={`answer-${field.id}`} aria-label={`Answer for ${field.label}`} name="value" defaultValue={field.value ?? ""} required />}
+        {!["checkbox", "signature", "photo"].includes(field.type) && <VoiceAnswer onResult={text => { const input = document.getElementById(`answer-${field.id}`) as HTMLInputElement | null; if (input) input.value = text; }} />}
         {!["checkbox", "signature", "photo"].includes(field.type) && <label className="inline"><input type="checkbox" name="remember" defaultChecked />Remember for future forms</label>}
         <div className="actions"><button type="submit" className="primary">Confirm answer</button><button type="button" onClick={async () => { try { setHelp((await post<{ answer: string }>("/api/ask", { question: `What does ${field.label} mean on this form?` })).answer); } catch (error) { setError((error as Error).message); } }}>Ano ’to?</button></div>
       </form></article>;
