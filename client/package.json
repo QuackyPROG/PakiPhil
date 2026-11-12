@@ -10,7 +10,7 @@
     "predev": "node scripts/pdf-worker.mjs",
     "prebuild": "node scripts/pdf-worker.mjs",
     "postinstall": "node scripts/pdf-worker.mjs",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
     "test:e2e": "playwright test"
   },
   "dependencies": {
