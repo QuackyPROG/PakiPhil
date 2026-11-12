@@ -68,6 +68,6 @@ P2 character-box layout and PNG page export are not implemented.
 The UI uses native accessible controls and CSS instead of adding shadcn/ui.
 The pitch, partner validation, backup video, and deployment require team/event work.
 
-Latest automated run: production build and lint passed; 9 unit tests and 3 Chromium
+Latest automated run: production build and lint passed; 9 unit tests and 4 Chromium
 browser tests passed. The actual Next.js OCR polling route also fetched and normalized
 the live sample successfully. Credentials were absent from tracked files and browser bundles.
