@@ -39,6 +39,37 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
     } catch (error) { setError((error as Error).message); }
     finally { setBusy(false); }
   }
+  async function editValue(index: number, value: string) {
+    const field = fields[index]; if (field.value === value) return;
+    setBusy(true); setError("");
+    try {
+      if (!value.trim()) throw new Error("Enter a value or exclude this field.");
+      const page = pages.find(p => p.number === field.pageNumber)!;
+      const start = page.words.findIndex((_, i) => {
+        let phrase = "";
+        for (let n = i; n < page.words.length && phrase.length <= field.value.length; n++) {
+          phrase += (n === i ? "" : " ") + page.words[n].text;
+          if (phrase === field.value) return true;
+        }
+        return false;
+      });
+      if (start < 0) throw new Error("Could not trace this value to OCR words. Correct the source words above and extract again.");
+      const original: typeof page.words = []; let phrase = "";
+      for (let i = start; phrase !== field.value && i < page.words.length; i++) {
+        original.push(page.words[i]); phrase = original.map(w => w.text).join(" ");
+      }
+      const replacements = original.length === 1 ? [value] : value.trim().split(/\s+/);
+      if (original.length !== replacements.length) throw new Error("For a different number of words, correct the source OCR above and extract again.");
+      for (let i = 0; i < original.length; i++) {
+        if (documentId !== "demo" && original[i].text !== replacements[i]) await post(`/api/ocr/${encodeURIComponent(documentId)}/correct`, { pageNumber: page.number, wordIndex: original[i].index, text: replacements[i] });
+      }
+      const words = page.words.map(w => { const n = original.findIndex(old => old.index === w.index); return n < 0 ? w : { ...w, text: replacements[n] }; });
+      setPages(old => old.map(p => p.number === page.number ? { ...p, words, text: words.map(w => w.text).join(" ") } : p));
+      setFields(old => old.map((f, i) => i === index ? { ...f, value, reason: undefined, suggestion: undefined } : f));
+      setProgress(documentId === "demo" ? "Sample correction saved locally. No API call." : "Edited value sent to Lumen OCR ✓");
+    } catch (error) { setError((error as Error).message); }
+    finally { setBusy(false); }
+  }
   async function save() {
     setBusy(true); setError("");
     try {
@@ -53,8 +84,8 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
     <p role="status">{progress}</p>{error && <p className="error" role="alert">{error}</p>}
     {documentId && documentId !== "demo" && !busy && <div className="actions"><button onClick={() => void read()}>Resume reading</button><button onClick={() => void read(undefined, true)}>Retry failed OCR</button></div>}
     {!!pages.length && <><OcrReview pages={pages} documentId={documentId} onChange={next => { setPages(next); setFields([]); }} /><button className="primary" disabled={busy} onClick={() => void extract()}>Extract record with Lumen AI</button></>}
-    {!!fields.length && <div className="card stack"><h3>Silip muna — confirm extracted values</h3><p className="muted">Need to fix a value? Correct its OCR word above, then extract again. This keeps the Lumen correction log accurate.</p>
-      {fields.map((field, i) => <label key={i}><span>{field.key.replace(/^core\./, "")}</span><input value={field.value} readOnly /><small>{field.reason ? `⚠ ${field.reason} ${field.suggestion ?? ""}` : "Review against your document"}</small><button onClick={() => setFields(fields.filter((_, n) => n !== i))}>Exclude</button></label>)}
+    {!!fields.length && <div className="card stack"><h3>Silip muna — confirm extracted values</h3><p className="muted">Edit a value and leave the box to send the correction to Lumen. Use the source words above for larger changes.</p>
+      {fields.map((field, i) => <label key={i}><span>{field.key.replace(/^core\./, "")}</span><input key={field.value} defaultValue={field.value} disabled={busy} onBlur={e => void editValue(i, e.target.value)} /><small>{field.reason ? `⚠ ${field.reason} ${field.suggestion ?? ""}` : "Review against your document"}</small><button onClick={() => setFields(fields.filter((_, n) => n !== i))}>Exclude</button></label>)}
       <button className="primary" disabled={busy} onClick={() => void save()}>Confirm and save {fields.length} values</button></div>}
   </section>;
 }
