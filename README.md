@@ -78,5 +78,5 @@ uploaded to Lumen; OCR text is sent to Lumen AI (or Gemini on fallback). Blank
 form images go to Gemini. Lumen does not expose upload deletion through this API.
 Clearing the record deletes only local personal data. There are no accounts,
 server database, identity verification, or government submissions.
-Use sample documents for public demos. P1 voice input and an official-form demo rehearsal remain unverified; P2 character
-boxes and PNG page export are deferred.
+Use sample documents for public demos. Live microphone/voice compatibility and an official-form demo rehearsal need manual
+validation; P2 character boxes and PNG page export are deferred.
