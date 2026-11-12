@@ -45,7 +45,9 @@ No upload IDs, chat transcripts, or credentials are committed.
 3. Run onboarding, OCR correction, a flat form, final check, and PDF download twice.
 4. Rehearse against actual SSS/Pag-IBIG demo forms. The bundled practice forms
    do not establish accuracy on those official layouts.
-5. Deploy with Vercel root `client` and server environment variables, then rehearse
+5. Keep Vercel demo request bodies below its 4.5 MB function payload limit.
+   Full 10 MB uploads need a different upload architecture or self-hosting.
+6. Deploy with Vercel root `client` and server environment variables, then rehearse
    on the deployed hostname. Hosting is not provisioned by this checkout.
 
 ## Verified local workflow

@@ -70,6 +70,10 @@ Import the repository in Vercel, set the root directory to `client`, and use its
 Next.js preset. Configure the variables from `client/.env.example` on the server.
 The PDF.js worker is copied from the installed package during install/build.
 No deployment, partner relationship, or government integration is provisioned here.
+Vercel Functions enforce a [4.5 MB request limit](https://vercel.com/docs/functions/limitations#request-body-size),
+so keep demo uploads and rendered PNG request bodies below that limit on Vercel.
+The 10 MB application limit is supported when self-hosted; full 10 MB Vercel uploads
+need an additional direct-upload design that this stateless proxy does not provide.
 
 ## Privacy and scope
 

@@ -2,7 +2,8 @@ import type { OcrPage } from "./ocr";
 import { validateUpload } from "./upload";
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, { ...init, signal: init?.signal ?? AbortSignal.timeout(90000) });
-  const result = await response.json();
+  if (response.status === 413) throw new Error("This file is too large for the current upload service. Try a smaller file.");
+  const result = await response.json().catch(() => { throw new Error("The service returned an unreadable response. Please retry."); });
   if (!response.ok) throw new Error(result.error || `Request failed (${response.status}).`);
   return result;
 }
