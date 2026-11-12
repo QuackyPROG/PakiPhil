@@ -54,3 +54,25 @@ test("edited extracted sample values are saved and empty edits are rejected", as
   await page.getByRole("button", { name: "Confirm and save 10 values" }).click();
   await expect(page.locator("input").filter({ visible: true }).first()).toHaveValue("John");
 });
+test("voice answers stay editable and require confirmation before learning", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "SpeechRecognition", { value: class {
+      onresult?: (event: { results: { transcript: string }[][] }) => void;
+      onend?: () => void;
+      start() { this.onresult?.({ results: [[{ transcript: "Pasig City" }]] }); this.onend?.(); }
+      abort() { this.onend?.(); }
+    } });
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Gawin ang record ko" }).click();
+  await page.getByRole("button", { name: "Try a sample ID", exact: true }).click();
+  await page.getByRole("button", { name: "Extract record with Lumen AI" }).click();
+  await page.getByRole("button", { name: "Confirm and save 10 values" }).click();
+  await page.getByRole("button", { name: "Paki-fill", exact: true }).click();
+  await page.getByRole("button", { name: "Try sample employment form" }).click();
+  await page.getByRole("button", { name: "Answer by voice" }).first().click();
+  await expect(page.getByRole("textbox", { name: "Answer for Birth place", exact: true })).toHaveValue("Pasig City");
+  await expect(page.getByRole("button", { name: "My record (10)" })).toBeVisible();
+  await page.getByRole("button", { name: "Confirm answer", exact: true }).first().click();
+  await expect(page.getByRole("button", { name: "My record (11)" })).toBeVisible();
+});
