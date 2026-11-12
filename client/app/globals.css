@@ -125,3 +125,7 @@ details[open]>summary { margin-bottom:15px; }
   .card { padding:17px; }
 }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+
+.page-thumbnail { flex-direction:column; gap:4px; padding:7px; font-size:11px; }
+.page-thumbnail img { width:44px; height:60px; object-fit:contain; border:1px solid var(--line); }
+.page-thumbnail[aria-pressed=true] { border-color:var(--green); background:#eaf0de; }
