@@ -38,5 +38,5 @@ test("mobile home fits viewport and file type errors are actionable", async ({ p
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("button", { name: "Gawin ang record ko" }).click();
   await page.locator('input[type="file"]').first().setInputFiles({ name: "bad.txt", mimeType: "text/plain", buffer: Buffer.from("bad") });
-  await expect(page.getByRole("alert")).toContainText("Use a PDF");
+  await expect(page.locator(".error[role=alert]")).toContainText("Use a PDF");
 });

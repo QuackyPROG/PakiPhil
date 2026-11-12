@@ -11,7 +11,7 @@ export function OcrReview({ pages, documentId, onChange }: { pages: OcrPage[]; d
     try {
       if (documentId !== "demo") await post(`/api/ocr/${encodeURIComponent(documentId)}/correct`, { pageNumber: page.number, wordIndex: index, text });
       onChange(pages.map(p => p.number !== page.number ? p : { ...p,
-        text: p.text.replace(old.text, text), words: p.words.map(w => w.index === index ? { ...w, text } : w) }));
+        text: p.words.map(w => w.index === index ? text : w.text).join(" "), words: p.words.map(w => w.index === index ? { ...w, text } : w) }));
       setMessage(documentId === "demo" ? "Sample correction saved locally. No API call." : "Correction sent to Lumen OCR ✓");
     } catch (error) { setMessage((error as Error).message); }
     finally { setBusy(false); }

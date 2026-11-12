@@ -19,7 +19,8 @@ async function chat(message: string) {
   let instance = process.env.LUMEN_AI_INSTANCE_ID;
   if (!instance) {
     const result = await lumen("ai_chat", "/instances");
-    instance = result.Instances?.find((i: { Name: string }) => i.Name === "Pirma Lang Extractor")?.InstanceID;
+    instance = result.Instances?.find((i: { Name: string }) => i.Name === "Pirma Lang Extractor")?.InstanceID
+      ?? result.Instances?.find((i: { Name: string; Status: string }) => i.Name === "PLP-Hackathon-Blank" && i.Status === "ACTIVE")?.InstanceID;
   }
   if (!instance) throw new ApiError("Create a Pirma Lang Extractor AI instance or set LUMEN_AI_INSTANCE_ID.", 503);
   const base = `/instances/${encodeURIComponent(instance)}/sessions`;
@@ -36,5 +37,6 @@ export async function aiJson<T>(prompt: string, schema: z.ZodType<T>): Promise<T
     catch (error) { last = error; if (error instanceof ApiError && error.status !== 504) break; }
   }
   if (process.env.GEMINI_API_KEY) return schema.parse(parseJson(await gemini(prompt)));
-  throw last;
+  if (last instanceof ApiError) throw last;
+  throw new ApiError("Lumen AI did not return valid task JSON. Check the instance instructions or configure GEMINI_API_KEY for fallback.", 502);
 }
