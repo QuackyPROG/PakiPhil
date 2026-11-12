@@ -40,7 +40,7 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
     finally { setBusy(false); }
   }
   async function editValue(index: number, value: string) {
-    const field = fields[index]; if (field.value === value) return;
+    const field = fields[index]; if (field.value === value) return true;
     setBusy(true); setError("");
     try {
       if (!value.trim()) throw new Error("Enter a value or exclude this field.");
@@ -67,7 +67,8 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
       setPages(old => old.map(p => p.number === page.number ? { ...p, words, text: words.map(w => w.text).join(" ") } : p));
       setFields(old => old.map((f, i) => i === index ? { ...f, value, reason: undefined, suggestion: undefined } : f));
       setProgress(documentId === "demo" ? "Sample correction saved locally. No API call." : "Edited value sent to Lumen OCR ✓");
-    } catch (error) { setError((error as Error).message); }
+      return true;
+    } catch (error) { setError((error as Error).message); return false; }
     finally { setBusy(false); }
   }
   async function save() {
@@ -83,9 +84,9 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
     <div className="actions"><button disabled={busy} onClick={() => { setId("demo"); setPages(structuredClone(demoPages)); setFields([]); setFile(undefined); setProgress("SAMPLE DEMO — no API calls. Review the sample words, then extract."); }}>Try a sample ID</button><button onClick={async () => download(await sampleId(), "sample-id.pdf")}>Download sample ID</button><button onClick={async () => download(await sampleBirthCertificate(), "sample-birth-certificate.pdf")}>Sample birth certificate</button></div>
     <p role="status">{progress}</p>{error && <p className="error" role="alert">{error}</p>}
     {documentId && documentId !== "demo" && !busy && <div className="actions"><button onClick={() => void read()}>Resume reading</button><button onClick={() => void read(undefined, true)}>Retry failed OCR</button></div>}
-    {!!pages.length && <><OcrReview pages={pages} documentId={documentId} onChange={next => { setPages(next); setFields([]); }} /><button className="primary" disabled={busy} onClick={() => void extract()}>Extract record with Lumen AI</button></>}
+    {!!pages.length && <><OcrReview pages={pages} documentId={documentId} onBusyChange={setBusy} onChange={next => { setPages(next); setFields([]); }} /><button className="primary" disabled={busy} onClick={() => void extract()}>Extract record with Lumen AI</button></>}
     {!!fields.length && <div className="card stack"><h3>Silip muna — confirm extracted values</h3><p className="muted">Edit a value and leave the box to send the correction to Lumen. Use the source words above for larger changes.</p>
-      {fields.map((field, i) => <label key={i}><span>{field.key.replace(/^core\./, "")}</span><input key={field.value} defaultValue={field.value} disabled={busy} onBlur={e => void editValue(i, e.target.value)} /><small>{field.reason ? `⚠ ${field.reason} ${field.suggestion ?? ""}` : "Review against your document"}</small><button onClick={() => setFields(fields.filter((_, n) => n !== i))}>Exclude</button></label>)}
+      {fields.map((field, i) => <label key={i}><span>{field.key.replace(/^core\./, "")}</span><input key={field.value} defaultValue={field.value} disabled={busy} onBlur={async e => { const input = e.currentTarget; if (!await editValue(i, input.value)) input.value = field.value; }} /><small>{field.reason ? `⚠ ${field.reason} ${field.suggestion ?? ""}` : "Review against your document"}</small><button onClick={() => setFields(fields.filter((_, n) => n !== i))}>Exclude</button></label>)}
       <button className="primary" disabled={busy} onClick={() => void save()}>Confirm and save {fields.length} values</button></div>}
   </section>;
 }
