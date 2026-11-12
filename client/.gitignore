@@ -43,3 +43,5 @@ next-env.d.ts
 # Generated from the installed pdfjs-dist version
 /public/pdf.worker.min.mjs
 !.env.example
+/test-results/
+/playwright-report/
