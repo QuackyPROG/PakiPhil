@@ -102,7 +102,7 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
   const reading = busy && !pages.length;
   return <section className="stack">
     <div className="section-head"><h2>Scan once. Reuse every time.</h2><p>Add an ID or a filled form. Lumen reads it, you check the details, and they’re saved for every form after this.</p></div>
-    {!fields.length && !pages.length && <><Upload disabled={busy} onFile={f => void read(f)} title={reading ? "Reading your document…" : "Drop an ID or document"} />
+    {!fields.length && !pages.length && <><Upload kind="id" disabled={busy} onFile={f => void read(f)} title={reading ? "Reading your document…" : "Drop an ID or document"} />
       <div className="samples"><span>No document handy?</span><button disabled={busy} onClick={() => { setId("demo"); setPages(structuredClone(demoPages)); setFields([]); setFile(undefined); setProgress("SAMPLE DEMO — no API calls. Review the sample words, then extract."); }}>Try a sample ID</button><button onClick={async () => download(await sampleId(), "sample-id.pdf")}>Download sample ID</button><button onClick={async () => download(await sampleBirthCertificate(), "sample-birth-certificate.pdf")}>Sample birth certificate</button></div></>}
     <Pipeline progress={progress} kind="scan" />{error && <p className="error" role="alert">{error}</p>}
     {documentId && !documentId.startsWith("demo") && !busy && <div className="actions"><button onClick={() => void read()}>Resume reading</button><button onClick={() => void read(undefined, true)}>Retry failed OCR</button></div>}

@@ -18,6 +18,9 @@ export const IconPen = (p: P) => <svg {...base(p)}><path d="M4 20c3-1 4.5-3.5 6-
 export const IconExpand = (p: P) => <svg {...base(p)}><path d="M9 4H4v5M15 4h5v5M20 15v5h-5M4 15v5h5" /></svg>;
 export const IconShrink = (p: P) => <svg {...base(p)}><path d="M4 9h5V4M20 9h-5V4M15 20v-5h5M9 20v-5H4" /></svg>;
 export const IconChat = (p: P) => <svg {...base(p)}><path d="M5 18.5V6.5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H8.5z" /><path d="M9 9.5h6M9 12.5h4" /></svg>;
+export const IconCamera = (p: P) => <svg {...base(p)}><path d="M4 8.5A1.5 1.5 0 015.5 7h2.3l1.4-2.2h5.6L16.2 7h2.3A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z" /><circle cx="12" cy="12.8" r="3.4" /></svg>;
+export const IconFlip = (p: P) => <svg {...base(p)}><path d="M4.5 10a7.5 7.5 0 0113.4-3.3M19.5 14a7.5 7.5 0 01-13.4 3.3" /><path d="M18.5 3v4h-4M5.5 21v-4h4" /></svg>;
+export const IconClose = (p: P) => <svg {...base(p)}><path d="M6 6l12 12M18 6L6 18" /></svg>;
 /** The PaPhil mark: a paw print whose palm pad is a checkmark. */
 export const BrandMark = (p: P) => <svg viewBox="0 0 40 40" aria-hidden {...p}>
   <rect width="40" height="40" rx="12" fill="var(--purple)" />
