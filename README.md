@@ -4,7 +4,7 @@
 
 <h1 align="center">PaPhil</h1>
 
-<p align="center"><b>"Kami na bahala sa form. Pirma ka na lang."</b></p>
+<p align="center"><b>"Si Phil na bahala sa form. Pirma ka na lang."</b></p>
 
 <p align="center">
 Scan your IDs once. Every form after that fills itself.<br />
