@@ -2,30 +2,50 @@
 /* eslint-disable @next/next/no-img-element -- Small local sticker images that swap per pose. */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { post } from "@/lib/api";
+import { getVoiceStatus, preloadVoice, speakWithVoice, stopVoice, unlockAudio } from "@/lib/phil-voice";
+import { cleanForSpeech } from "@/lib/phil-voice-text";
 import { gsap, playSfx, preloadSfx, reducedMotion, useGSAP, type Sfx } from "./ui/motion";
 import { IconSend } from "./ui/icons";
 
+/** Phil is a cheetah: his voice sits a bit higher than the narrator the model was trained on. */
+const PHIL_PITCH = 1.25;
+
+/** Browser speech, used while the Piper voice loads or if it cannot load. */
+function speakWithBrowser(text: string, onStart: () => void, onEnd: () => void) {
+  if (!("speechSynthesis" in window)) return;
+  const utterance = new SpeechSynthesisUtterance(cleanForSpeech(text));
+  const voices = window.speechSynthesis.getVoices();
+  utterance.voice = voices.find(v => /fil|tl/i.test(v.lang)) ?? voices.find(v => v.lang.startsWith("en")) ?? null;
+  utterance.pitch = PHIL_PITCH;
+  utterance.onstart = onStart; utterance.onend = utterance.onerror = onEnd;
+  window.speechSynthesis.speak(utterance);
+}
+
 export function usePhil() {
   const [muted, setMuted] = useState(true); const [speaking, setSpeaking] = useState(false);
-  const speak = useCallback((text: string) => {
-    if (muted || !("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find(v => /fil|tl/i.test(v.lang)) ?? voices.find(v => v.lang.startsWith("en")) ?? null;
-    utterance.onstart = () => setSpeaking(true); utterance.onend = utterance.onerror = () => setSpeaking(false);
-    window.speechSynthesis.speak(utterance);
-  }, [muted]);
-  useEffect(() => () => { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); }, []);
-  const toggle = useCallback(() => {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  const silence = useCallback(() => {
+    stopVoice(); if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     setSpeaking(false);
+  }, []);
+  const speak = useCallback((text: string) => {
+    if (muted) return;
+    silence();
+    const start = () => setSpeaking(true); const end = () => setSpeaking(false);
+    // Phil's own Filipino voice once loaded; the browser's voice while it loads or if it fails.
+    if (getVoiceStatus() === "ready") {
+      speakWithVoice(text, { pitch: PHIL_PITCH, onStart: start, onEnd: end }).catch(() => speakWithBrowser(text, start, end));
+    } else speakWithBrowser(text, start, end);
+  }, [muted, silence]);
+  useEffect(() => silence, [silence]);
+  const toggle = useCallback(() => {
+    silence();
     setMuted(was => {
       const next = !was;
-      if (!next) { preloadSfx(); playSfx("pop"); } // A cue on turning sound on proves it works.
+      // A cue on turning sound on proves it works; the voice model starts loading on the same click.
+      if (!next) { unlockAudio(); void preloadVoice().catch(() => {}); preloadSfx(); playSfx("pop"); }
       return next;
     });
-  }, []);
+  }, [silence]);
   return { muted, speaking, speak, toggle };
 }
 

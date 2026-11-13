@@ -45,3 +45,8 @@ next-env.d.ts
 !.env.example
 /test-results/
 /playwright-report/
+
+# Phil's Piper voice: 63 MB, served locally in dev; production falls back to the pinned Hugging Face copy
+/public/tts/*.onnx
+/public/tts/*.wav
+/public/tts/test.html
