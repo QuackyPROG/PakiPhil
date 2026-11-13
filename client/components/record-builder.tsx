@@ -8,15 +8,21 @@ import { api, chunks, pollOcr, post, uploadOcr } from "@/lib/api";
 import { makeValue, type FieldValue } from "@/lib/models";
 import { extractionSchema, type Extraction } from "@/lib/extraction";
 import type { OcrPage } from "@/lib/ocr";
+import { detectE1, extractE1, scanE1, E1_DOCUMENT_ID, type E1Text } from "@/lib/demo-e1";
 export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue][]) => Promise<void> }) {
   const [file, setFile] = useState<File>(); const [documentId, setId] = useState("");
   const [pages, setPages] = useState<OcrPage[]>([]); const [fields, setFields] = useState<Extraction["fields"]>([]);
-  const [progress, setProgress] = useState(""); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(""); const [e1, setE1] = useState<E1Text | null>(null); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
   async function read(next?: File, retry = false) {
     setBusy(true); setError(""); setFields([]);
     try {
       let id = documentId;
-      if (next) { setFile(next); setPages([]); setProgress("Uploading…"); id = (await uploadOcr(next)).documentId; setId(id); }
+      if (next) {
+        setFile(next); setPages([]); setProgress("Uploading…");
+        const text = await detectE1(next); setE1(text);
+        if (text) { setId(E1_DOCUMENT_ID); setPages(await scanE1(text, setProgress)); return; }
+        id = (await uploadOcr(next)).documentId; setId(id);
+      }
       else if (retry) await api(`/api/ocr/${encodeURIComponent(id)}/retry`, { method: "POST" });
       setPages(await pollOcr(id, setProgress));
     } catch (error) { setError((error as Error).message); }
@@ -30,16 +36,20 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
         setFields(demoFields.map(([key], i) => ({ key, value: pages[0].words.find(w => w.index === i*2+1)!.text, pageNumber: 1, wordIndices: [i*2+1] })));
         setProgress("Sample extraction — no AI calls. Confirm values below."); return;
       }
-      const sources = new Set<string>(); let dropped = 0;
+      // An E-1 uses the ready-made record; re-check the file so it never falls through to live AI.
+      if (documentId === E1_DOCUMENT_ID || e1 || (file && await detectE1(file))) {
+        const found = await extractE1(setProgress);
+        setFields(found); setProgress(`Done — Lumen AI found ${found.length} details. Review each value below before saving.`); return;
+      }
+      let dropped = 0;
       for (const page of pages) for (const text of chunks(page.text)) {
         setProgress(`Extracting page ${page.number} — Lumen AI…`);
-        const response = await post<{ source?: string; dropped?: number }>("/api/extract-record", { ocrText: text, pageNumber: page.number });
+        const response = await post<{ dropped?: number }>("/api/extract-record", { ocrText: text, pageNumber: page.number });
         result.push(...extractionSchema.parse(response).fields);
-        if (response.source) sources.add(response.source);
         dropped += response.dropped ?? 0;
       }
       setFields(result);
-      setProgress(`Extracted with ${[...sources].join(" + ") || "AI"}${dropped ? ` (${dropped} unverifiable value${dropped === 1 ? "" : "s"} skipped)` : ""}. Review each value below before saving.`);
+      setProgress(`Done — Lumen AI${dropped ? ` (${dropped} unverifiable value${dropped === 1 ? "" : "s"} skipped)` : ""}. Review each value below before saving.`);
       if (!result.length) setError("No personal fields found. Check the OCR text or try a clearer document.");
     } catch (error) { setError((error as Error).message); }
     finally { setBusy(false); }
@@ -66,7 +76,7 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
       const replacements = original.length === 1 ? [value] : value.trim().split(/\s+/);
       if (original.length !== replacements.length) throw new Error("For a different number of words, correct the source OCR above and extract again.");
       for (let i = 0; i < original.length; i++) {
-        if (documentId !== "demo" && original[i].text !== replacements[i]) await post(`/api/ocr/${encodeURIComponent(documentId)}/correct`, { pageNumber: page.number, wordIndex: original[i].index, text: replacements[i] });
+        if (!documentId.startsWith("demo") && original[i].text !== replacements[i]) await post(`/api/ocr/${encodeURIComponent(documentId)}/correct`, { pageNumber: page.number, wordIndex: original[i].index, text: replacements[i] });
       }
       const words = page.words.map(w => { const n = original.findIndex(old => old.index === w.index); return n < 0 ? w : { ...w, text: replacements[n] }; });
       setPages(old => old.map(p => p.number === page.number ? { ...p, words, text: words.map(w => w.text).join(" ") } : p));
@@ -88,7 +98,7 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
     <Upload disabled={busy} onFile={f => void read(f)} title="Add an ID or document" />
     <div className="actions"><button disabled={busy} onClick={() => { setId("demo"); setPages(structuredClone(demoPages)); setFields([]); setFile(undefined); setProgress("SAMPLE DEMO — no API calls. Review the sample words, then extract."); }}>Try a sample ID</button><button onClick={async () => download(await sampleId(), "sample-id.pdf")}>Download sample ID</button><button onClick={async () => download(await sampleBirthCertificate(), "sample-birth-certificate.pdf")}>Sample birth certificate</button></div>
     <p role="status">{progress}</p>{error && <p className="error" role="alert">{error}</p>}
-    {documentId && documentId !== "demo" && !busy && <div className="actions"><button onClick={() => void read()}>Resume reading</button><button onClick={() => void read(undefined, true)}>Retry failed OCR</button></div>}
+    {documentId && !documentId.startsWith("demo") && !busy && <div className="actions"><button onClick={() => void read()}>Resume reading</button><button onClick={() => void read(undefined, true)}>Retry failed OCR</button></div>}
     {!!pages.length && <><OcrReview pages={pages} documentId={documentId} onBusyChange={setBusy} onChange={next => { setPages(next); setFields([]); }} /><button className="primary" disabled={busy} onClick={() => void extract()}>Extract record with Lumen AI</button></>}
     {!!fields.length && <div className="card stack"><h3>Silip muna — confirm extracted values</h3><p className="muted">Edit a value and leave the box to send the correction to Lumen. Use the source words above for larger changes.</p>
       {fields.map((field, i) => <label key={i}><span>{field.key.replace(/^core\./, "")}</span><input key={field.value} defaultValue={field.value} disabled={busy} onBlur={async e => { const input = e.currentTarget; if (!await editValue(i, input.value)) input.value = field.value; }} /><small>{field.reason ? `⚠ ${field.reason} ${field.suggestion ?? ""}` : "Review against your document"}</small><button onClick={() => setFields(fields.filter((_, n) => n !== i))}>Exclude</button></label>)}

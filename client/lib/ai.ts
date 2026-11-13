@@ -43,8 +43,12 @@ export async function vision(prompt: string, image?: string) {
     try { return await gemini(prompt, image); }
     catch (error) { if (!process.env.OPENROUTER_API_KEY) throw error; }
   }
-  if (process.env.OPENROUTER_API_KEY) return openrouter(prompt, image);
-  throw new ApiError("Configure GEMINI_API_KEY or OPENROUTER_API_KEY for form detection or AI fallback.", 503);
+  if (process.env.OPENROUTER_API_KEY) {
+    try { return await openrouter(prompt, image); }
+    catch (error) { console.warn(`[ai] OpenRouter vision failed: ${reason(error)}`); throw new ApiError("Lumen AI could not read this form right now. Please retry.", 502); }
+  }
+  console.warn("[ai] no vision provider configured (GEMINI_API_KEY / OPENROUTER_API_KEY)");
+  throw new ApiError("Form detection is not configured on the server.", 503);
 }
 async function chat(message: string) {
   let instance = process.env.LUMEN_AI_INSTANCE_ID;
@@ -108,7 +112,9 @@ export async function aiJsonWithSource<T>(prompt: string, schema: z.ZodType<T>):
     const result = await attempt(source, call);
     if (result) return result;
   }
-  throw new ApiError(`AI could not complete this request — ${[...failures].join("; ")}.${fallbacks.length ? "" : " Configure GEMINI_API_KEY or OPENROUTER_API_KEY for a fallback."}`, 502);
+  // Full provider detail stays in the server log; the page only sees a neutral message.
+  console.warn(`[ai] all providers failed — ${[...failures].join("; ")}`);
+  throw new ApiError("Lumen AI could not complete this request. Please retry.", 502);
 }
 export async function aiJson<T>(prompt: string, schema: z.ZodType<T>): Promise<T> {
   return (await aiJsonWithSource(prompt, schema)).data;

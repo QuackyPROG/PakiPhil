@@ -19,6 +19,9 @@ export async function exportPdf(pages: FormPage[], assets: PersonalRecord["asset
       } else if (field.type === "checkbox" && field.value === "true") {
         page.drawLine({ start: { x: x + w * .15, y: y + h * .5 }, end: { x: x + w * .4, y: y + h * .2 }, thickness: 1.5 });
         page.drawLine({ start: { x: x + w * .4, y: y + h * .2 }, end: { x: x + w * .9, y: y + h * .85 }, thickness: 1.5 });
+      } else if (field.comb && field.value) {
+        const cell = w / field.comb, size = Math.min(12, h * .7);
+        [...field.value].slice(0, field.comb).forEach((c, i) => page.drawText(c, { x: x + i * cell + (cell - font.widthOfTextAtSize(c, size)) / 2, y: y + Math.max(1, (h - size) / 2), size, font, color: rgb(.08, .16, .19) }));
       } else if (field.value && !["checkbox", "signature", "photo"].includes(field.type)) {
         let size = Math.min(12, h * .7);
         try { const measured = font.widthOfTextAtSize(field.value, size); if (measured > w - 4) size *= (w - 4) / measured; }

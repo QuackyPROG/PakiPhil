@@ -10,7 +10,7 @@ export function OcrReview({ pages, documentId, onChange, onBusyChange }: { pages
     if (!text.trim()) { setMessage("Enter a non-empty OCR word."); return false; }
     setBusy(true); onBusyChange(true); setMessage("");
     try {
-      if (documentId !== "demo") await post(`/api/ocr/${encodeURIComponent(documentId)}/correct`, { pageNumber: page.number, wordIndex: index, text });
+      if (!documentId.startsWith("demo")) await post(`/api/ocr/${encodeURIComponent(documentId)}/correct`, { pageNumber: page.number, wordIndex: index, text });
       onChange(pages.map(p => p.number !== page.number ? p : { ...p,
         text: p.words.map(w => w.index === index ? text : w.text).join(" "), words: p.words.map(w => w.index === index ? { ...w, text } : w) }));
       setMessage(documentId === "demo" ? "Sample correction saved locally. No API call." : "Correction sent to Lumen OCR ✓");

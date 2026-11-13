@@ -85,6 +85,8 @@ details[open]>summary { margin-bottom:15px; }
 .answer.red { border-color:#d08b78; background:#f5c5ab33; }
 .answer>span { display:flex; align-items:center; justify-content:flex-start; padding:1px 2px; width:100%; height:100%; white-space:nowrap; overflow:hidden; font-family:Arial,sans-serif; }
 .answer img { width:100%; height:100%; object-fit:contain; }
+.answer .comb { display:flex; width:100%; }
+.answer .comb>span { flex:1; text-align:center; }
 .review-field { padding:18px; background:#fffef9; border:1px solid #e5bdae; border-left:3px solid #c3755b; border-radius:7px; }
 .review-field.yellow { border-color:#ddcc92; border-left-color:#b9983c; }
 .review-field.green { border-color:#bfd1b7; border-left-color:#648b5c; margin-top:12px; }

@@ -5,6 +5,7 @@ import { recordPaths } from "./extraction";
 import { computed } from "./record";
 import { renderFile, type FormPage } from "./pdf";
 import { z } from "zod";
+import { detectE1, fillE1 } from "./demo-e1";
 const detectedSchema = z.object({ fields: z.array(formFieldSchema) });
 const mappingsSchema = z.object({ mappings: z.array(z.object({ label: z.string(), recordKey: z.string().optional(), status: z.enum(["green", "yellow", "red"]), reason: z.string().optional() })) });
 export async function mapPage(page: FormPage, record: PersonalRecord): Promise<FormPage> {
@@ -27,6 +28,8 @@ export async function mapPage(page: FormPage, record: PersonalRecord): Promise<F
   return { ...page, fields };
 }
 export async function analyzeForm(file: File, record: PersonalRecord, progress: (text: string) => void) {
+  const e1 = await detectE1(file);
+  if (e1) return fillE1(file, e1, record, progress);
   progress("Rendering pages…"); const pages = await renderFile(file);
   const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", await file.arrayBuffer()))).map(v => v.toString(16).padStart(2, "0")).join("");
   const cacheKey = `pirma-form-layout-v1-${hash}`;

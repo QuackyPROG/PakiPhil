@@ -20,7 +20,7 @@ export function FormPreview({ page, assets, onChange }: { page: FormPage; assets
       return <Rnd key={field.id} bounds="parent" size={{ width: w, height: h }} position={{ x: l/1000*width, y: t/1000*height }} minWidth={8} minHeight={8}
         onDragStop={(_, d) => box(field, d.x, d.y, w, h)} onResizeStop={(_, __, el, ___, position) => box(field, position.x, position.y, el.offsetWidth, el.offsetHeight)}
         className={`answer ${field.status}`} title={`${field.label}: ${field.value ?? "Missing"}. Drag or resize to adjust.`}>
-        <span style={{ fontSize: Math.max(7, Math.min(16, h * .65)) }}>{asset && field.value !== "skip" ? <img src={asset} alt={field.type} /> : field.type === "checkbox" ? field.value === "true" ? "✓" : "" : ["signature", "photo"].includes(field.type) ? "" : field.value || "?"}</span>
+        <span style={{ fontSize: Math.max(7, Math.min(16, h * .65)) }}>{asset && field.value !== "skip" ? <img src={asset} alt={field.type} /> : field.type === "checkbox" ? field.value === "true" ? "✓" : "" : ["signature", "photo"].includes(field.type) ? "" : field.comb && field.value ? <span className="comb">{[...field.value].map((c, i) => <span key={i}>{c}</span>)}</span> : field.value || "?"}</span>
       </Rnd>;
     })}
   </div>;

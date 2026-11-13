@@ -1,0 +1,434 @@
+[
+ {
+  "key": "core.ids.sss",
+  "value": "34-5678901-2",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.lastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.firstName",
+  "value": "JOSE MIGUEL",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.middleName",
+  "value": "BAUTISTA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.suffix",
+  "value": "JR.",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.birthDate",
+  "value": "1988-03-14",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.ids.tin",
+  "value": "123-456-789",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.citizenship",
+  "value": "FILIPINO",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.birthPlace",
+  "value": "CITY OF SAN FERNANDO, PAMPANGA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.birthPlaceAbroad",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.unitBldg",
+  "value": "UNIT 4B, LIWAYWAY BLDG.",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.address.houseNo",
+  "value": "LOT 12 BLK. 7",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.address.street",
+  "value": "MABINI ST.",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.subdivision",
+  "value": "GREENFIELDS SUBD.",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.address.barangay",
+  "value": "BRGY. SAN ISIDRO",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.address.city",
+  "value": "CITY OF SAN FERNANDO",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.address.province",
+  "value": "PAMPANGA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.country",
+  "value": "PHILIPPINES",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.address.zip",
+  "value": "2000",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.mobile",
+  "value": "0917-555-0142",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.telephone",
+  "value": "+63 45 555 0198",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.fatherLastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.fatherFirstName",
+  "value": "ROBERTO",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.fatherMiddleName",
+  "value": "CRUZ",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.fatherSuffix",
+  "value": "SR.",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.motherLastName",
+  "value": "BAUTISTA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.motherFirstName",
+  "value": "CARMELITA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.motherMiddleName",
+  "value": "REYES",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.motherSuffix",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.spouseLastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.spouseFirstName",
+  "value": "ANGELICA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.spouseMiddleName",
+  "value": "DIZON",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.spouseSuffix",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.spouseBirthDate",
+  "value": "1990-07-22",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child1LastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child1FirstName",
+  "value": "SOFIA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child1MiddleName",
+  "value": "DIZON",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child1Suffix",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child1BirthDate",
+  "value": "2012-02-10",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child2LastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child2FirstName",
+  "value": "MATEO",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child2MiddleName",
+  "value": "DIZON",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child2Suffix",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child2BirthDate",
+  "value": "2013-11-05",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child3LastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child3FirstName",
+  "value": "ISABELLA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child3MiddleName",
+  "value": "DIZON",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child3Suffix",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child3BirthDate",
+  "value": "2015-06-18",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child4LastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child4FirstName",
+  "value": "GABRIEL",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child4MiddleName",
+  "value": "DIZON",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child4Suffix",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child4BirthDate",
+  "value": "2017-09-30",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child5LastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child5FirstName",
+  "value": "LUCIA",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child5MiddleName",
+  "value": "DIZON",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child5Suffix",
+  "value": "N/A",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child5BirthDate",
+  "value": "2019-01-12",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.business",
+  "value": "FURNITURE MAKING",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child6LastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child6FirstName",
+  "value": "ANDRES",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child6MiddleName",
+  "value": "DIZON",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child6Suffix",
+  "value": "N/A",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child6BirthDate",
+  "value": "2021-04-25",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child7LastName",
+  "value": "VILLANUEVA",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child7FirstName",
+  "value": "CAMILLE",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child7MiddleName",
+  "value": "DIZON",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child7Suffix",
+  "value": "N/A",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "extra.child7BirthDate",
+  "value": "2023-12-03",
+  "pageNumber": 3,
+  "wordIndices": []
+ },
+ {
+  "key": "core.sex",
+  "value": "Male",
+  "pageNumber": 1,
+  "wordIndices": []
+ },
+ {
+  "key": "core.civilStatus",
+  "value": "Married",
+  "pageNumber": 1,
+  "wordIndices": []
+ }
+]

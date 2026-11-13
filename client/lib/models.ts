@@ -23,7 +23,7 @@ export const boxSchema = z.tuple([z.number(), z.number(), z.number(), z.number()
 export const formFieldSchema = z.object({
   id: z.string(), label: z.string().min(1).max(200), box: boxSchema,
   type: z.enum(["text", "date", "checkbox", "signature", "photo"]),
-  options: z.array(z.string()).optional(), recordKey: z.string().optional(),
+  options: z.array(z.string()).optional(), comb: z.number().int().min(2).max(20).optional(), recordKey: z.string().optional(),
   value: z.string().optional(), status: z.enum(["green", "yellow", "red"]), reason: z.string().optional(),
 });
 export type PersonalRecord = z.infer<typeof recordSchema>;
