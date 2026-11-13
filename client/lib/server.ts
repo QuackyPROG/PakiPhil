@@ -7,6 +7,7 @@ export class ApiError extends Error {
   constructor(message: string, public status = 502) { super(message); }
 }
 export function failure(error: unknown) {
+  if (!(error instanceof ApiError)) console.error("[api] unexpected error:", error, error instanceof Error ? error.cause : "");
   const status = error instanceof ApiError ? error.status : error instanceof SyntaxError ? 400 : 502;
   return Response.json({ error: error instanceof ApiError ? error.message : "Could not process this request. Please retry." }, { status, headers: { "Cache-Control": "no-store" } });
 }

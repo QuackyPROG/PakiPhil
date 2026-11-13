@@ -30,11 +30,16 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
         setFields(demoFields.map(([key], i) => ({ key, value: pages[0].words.find(w => w.index === i*2+1)!.text, pageNumber: 1, wordIndices: [i*2+1] })));
         setProgress("Sample extraction — no AI calls. Confirm values below."); return;
       }
+      const sources = new Set<string>(); let dropped = 0;
       for (const page of pages) for (const text of chunks(page.text)) {
         setProgress(`Extracting page ${page.number} — Lumen AI…`);
-        result.push(...extractionSchema.parse(await post("/api/extract-record", { ocrText: text, pageNumber: page.number })).fields);
+        const response = await post<{ source?: string; dropped?: number }>("/api/extract-record", { ocrText: text, pageNumber: page.number });
+        result.push(...extractionSchema.parse(response).fields);
+        if (response.source) sources.add(response.source);
+        dropped += response.dropped ?? 0;
       }
-      setFields(result); setProgress("Review each value below before saving.");
+      setFields(result);
+      setProgress(`Extracted with ${[...sources].join(" + ") || "AI"}${dropped ? ` (${dropped} unverifiable value${dropped === 1 ? "" : "s"} skipped)` : ""}. Review each value below before saving.`);
       if (!result.length) setError("No personal fields found. Check the OCR text or try a clearer document.");
     } catch (error) { setError((error as Error).message); }
     finally { setBusy(false); }
