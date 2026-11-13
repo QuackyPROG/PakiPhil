@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { IconMic } from "./ui/icons";
 type Recognition = {
   lang: string; interimResults: boolean;
   start: () => void; abort: () => void;
@@ -28,5 +29,5 @@ export function VoiceAnswer({ onResult }: { onResult: (text: string) => void }) 
     try { setError(""); setListening(true); speech.start(); } catch { setListening(false); setError("Could not start the microphone. Type your answer instead."); }
   }
   if (!supported) return null;
-  return <div><button type="button" aria-pressed={listening} onClick={start}>{listening ? "Stop listening" : "Answer by voice"}</button><small role="status">{listening ? "Listening… Review your answer before confirming." : error}</small></div>;
+  return <div><button type="button" aria-pressed={listening} onClick={start}><IconMic />{listening ? "Stop listening" : "Answer by voice"}</button><small role="status">{listening ? "Listening… Review your answer before confirming." : error}</small></div>;
 }

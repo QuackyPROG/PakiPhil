@@ -50,7 +50,7 @@ export async function vision(prompt: string, image?: string) {
   console.warn("[ai] no vision provider configured (GEMINI_API_KEY / OPENROUTER_API_KEY)");
   throw new ApiError("Form detection is not configured on the server.", 503);
 }
-async function chat(message: string) {
+async function lumenInstance() {
   let instance = process.env.LUMEN_AI_INSTANCE_ID;
   if (!instance) {
     const result = await lumen("ai_chat", "/instances");
@@ -58,11 +58,21 @@ async function chat(message: string) {
       ?? result.Instances?.find((i: { Name: string; Status: string }) => i.Name === "PLP-Hackathon-Blank" && i.Status === "ACTIVE")?.InstanceID;
   }
   if (!instance) throw new ApiError("Create a Pirma Lang Extractor AI instance or set LUMEN_AI_INSTANCE_ID.", 503);
-  const base = `/instances/${encodeURIComponent(instance)}/sessions`;
-  const session = await lumen("ai_chat", base, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: "Pirma Lang task" }) });
-  const result = await lumen("ai_chat", `${base}/${encodeURIComponent(session.Session.id)}/messages`, {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message }) });
+  return `/instances/${encodeURIComponent(instance)}/sessions`;
+}
+/** Opens a persistent Lumen AI Chat session (2 credits). Keep its id to continue the conversation. */
+export async function openLumenSession(title: string) {
+  const session = await lumen("ai_chat", await lumenInstance(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title }) });
+  return z.string().parse(session.Session.id);
+}
+/** One turn in an existing session (5 credits). The reply can take up to 25 s. */
+export async function sendLumenMessage(sessionId: string, message: string) {
+  const result = await lumen("ai_chat", `${await lumenInstance()}/${encodeURIComponent(sessionId)}/messages`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: message.slice(0, 4000) }) });
   return z.string().parse(result.Answer.answer);
+}
+async function chat(message: string) {
+  return sendLumenMessage(await openLumenSession("PaPhil task"), message);
 }
 export type AiSource = "Lumen AI" | "Gemini" | "OpenRouter";
 function reason(error: unknown) {
@@ -78,7 +88,7 @@ function reason(error: unknown) {
   return message.slice(0, 200);
 }
 /** Tries Lumen AI (twice), then Gemini, then OpenRouter; reports which one answered, or why each failed. */
-export async function aiJsonWithSource<T>(prompt: string, schema: z.ZodType<T>): Promise<{ data: T; source: AiSource }> {
+export async function aiJsonWithSource<T>(prompt: string, schema: z.ZodType<T>, options: { skipLumen?: boolean } = {}): Promise<{ data: T; source: AiSource }> {
   if (prompt.length > 4000) throw new ApiError("AI message exceeds 4,000 characters. Process a smaller page.", 400);
   const failures = new Set<string>();
   let lastError: unknown;
@@ -97,7 +107,7 @@ export async function aiJsonWithSource<T>(prompt: string, schema: z.ZodType<T>):
       return null;
     }
   };
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < (options.skipLumen ? 0 : 2); i++) {
     const result = await attempt("Lumen AI", () => chat(prompt));
     if (result) return result;
     // Only a timeout is worth retrying; a refusal or malformed answer will repeat.

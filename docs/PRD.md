@@ -1,4 +1,4 @@
-# Pirma Lang — Product Requirements (Hackathon Edition)
+# PaPhil — Product Requirements (Hackathon Edition)
 
 > **"Kami na bahala sa form. Pirma ka na lang."**
 > Scan your IDs once. Every form after that fills itself. All you do is sign.
@@ -7,7 +7,7 @@
 |---|---|
 | **Event** | OVERCLOCK 2026 (PLP CCS) · Lumen AI challenge |
 | **Status** | Draft v1 · 2026-11-13 |
-| **Working name** | Pirma Lang (mascot: **Ate Fill**) |
+| **Working name** | PaPhil (mascot: **Phil**) |
 | **Scope rule** | This is a hackathon build. Anything not needed for the 90-second demo is P1/P2 and gets cut first. |
 
 ---
@@ -49,7 +49,7 @@ A web app that reads your IDs with **Lumen OCR**, turns them into one personal r
 
 ## 5. Judging alignment
 
-| Requirement / bonus | How Pirma Lang meets it |
+| Requirement / bonus | How PaPhil meets it |
 |---|---|
 | Working web app | Next.js app deployed on Vercel |
 | Uses Lumen OCR or AI Chat | Uses **both**: OCR reads IDs and forms; AI Chat extracts the record and maps form fields |
@@ -75,7 +75,7 @@ EVERY FORM
               Lumen AI maps each field label → record key, assigns 🟢 / 🟡 / 🔴
                                      │
                                      ▼
-      Final check: only 🟡 / 🔴 / ⚠️ shown · Ate Fill asks for 🔴 by voice · answers saved to record
+      Final check: only 🟡 / 🔴 / ⚠️ shown · Phil asks for 🔴 by voice · answers saved to record
                                      │
                                      ▼
           Export filled PDF (pdf-lib): answers + signature + 1×1 photo ─► Download
@@ -125,7 +125,7 @@ Priority: **P0** = demo breaks without it · **P1** = strong for judging, build 
 |---|---|---|---|
 | FC-1 | Show only 🟡, 🔴 and ⚠️ fields; fold 🟢 under "28 fields filled from your record ✓" | P0 | Green fields are expandable but collapsed by default |
 | FC-2 | 🟡 one-tap confirm, or edit | P0 | Confirm turns it 🟢 |
-| FC-3 | 🔴 Ate Fill asks out loud; user answers by voice or typing | P0 (typing) / P1 (voice) | Answer fills the field and is saved to the record |
+| FC-3 | 🔴 Phil asks out loud; user answers by voice or typing | P0 (typing) / P1 (voice) | Answer fills the field and is saved to the record |
 | FC-4 | Remember new answers for future forms | P0 | Form-specific answers (position applied for, amount) come back next time as 🟡 "Last time: Cashier — same?", never 🟢 |
 | FC-5 | Show each value's source on tap ("from your PhilSys ID, scanned Nov 13") | P1 | Source shown in a tooltip or drawer |
 
@@ -138,14 +138,14 @@ Priority: **P0** = demo breaks without it · **P1** = strong for judging, build 
 | EX-3 | Place 1×1 photo in the photo box | P2 | Fitted to box |
 | EX-4 | Export a PNG of each page | P2 | One click |
 
-### 7.5 Mascot — Ate Fill
+### 7.5 Mascot — Phil
 
 | ID | Requirement | Priority |
 |---|---|---|
 | MA-1 | Simple SVG character with a CSS-animated mouth while speaking | P1 |
 | MA-2 | Speaks only at 3 moments: onboarding welcome, asking for 🔴 fields, finish celebration ("Tapos na! 31 fields, 0 tanong. Pirma ka na lang!") | P1 |
 | MA-3 | Uses browser speech synthesis (Filipino voice if available, English fallback) with a mute toggle | P1 |
-| MA-4 | "Ano 'to?" chat: ask Ate Fill what a field means (Lumen AI Chat) | P2 |
+| MA-4 | "Ano 'to?" chat: ask Phil what a field means (Lumen AI Chat) | P2 |
 
 ## 8. Data model
 
@@ -264,7 +264,7 @@ react-signature-canvas                            /api/ask            ───�
 
 **Instance instructions (draft)**
 ```
-You are the extraction engine of Pirma Lang, a Philippine form-filling app.
+You are the extraction engine of PaPhil, a Philippine form-filling app.
 Always answer with a single JSON object and nothing else.
 Rules:
 - Fix obvious OCR errors in LABELS (e.g., "FIRTH NAME" -> "First Name", "Apelyido" = Last Name).
@@ -283,7 +283,7 @@ and options for checkbox groups. Return JSON array only.
 
 ## 12. Screens
 
-1. **Home** — Ate Fill greeting, two big buttons: "Gawin ang record ko" (build my record) and "Paki-fill ang form" (fill a form).
+1. **Home** — Phil greeting, two big buttons: "Gawin ang record ko" (build my record) and "Paki-fill ang form" (fill a form).
 2. **Record builder** — upload, OCR progress, extracted fields with edit, conflict cards.
 3. **My record** — all saved info grouped (personal, address, family, IDs), source per value, export/import, signature, photo.
 4. **Form upload** — drop zone, page thumbnails, processing steps ("Reading labels… Finding blanks… Filling…").
@@ -302,8 +302,8 @@ and options for checkbox groups. Return JSON array only.
 
 1. **Hook (10 s):** "Ilang beses mo na sinulat ang pangalan mo ngayong taon?" Show a stack of 5 forms.
 2. **Onboarding (25 s):** Upload sample ID + sample PSA birth certificate. Record builds itself. Fix one OCR misread live (shows the Lumen review step).
-3. **Form 1 — SSS E-1 (30 s):** Upload. Fields fill. 2 🔴 fields: Ate Fill asks out loud; answer them. Download PDF.
-4. **Form 2 — Pag-IBIG (15 s):** Upload. Everything 🟢. Ate Fill: "Tapos na! 0 tanong. Pirma ka na lang!" Draw signature. Download.
+3. **Form 1 — SSS E-1 (30 s):** Upload. Fields fill. 2 🔴 fields: Phil asks out loud; answer them. Download PDF.
+4. **Form 2 — Pag-IBIG (15 s):** Upload. Everything 🟢. Phil: "Tapos na! 0 tanong. Pirma ka na lang!" Draw signature. Download.
 5. **Close (10 s):** SDG 8/10, partner Pasig PESO, "Kami na bahala sa form. Pirma ka na lang."
 
 **Fallbacks:** pre-processed results cached for both forms; if Lumen or Gemini is slow on stage, load the cached run with the same UI.
@@ -317,7 +317,7 @@ Assumes a team of 4; adjust to your team.
 | **1. Setup** | Next.js app, Vercel deploy, env vars, `/api/ocr` working end to end | Download demo forms; test pdf.js render + pdf-lib drawText at a fixed spot | Layout, home, upload components | Make sample ID + birth certificate (watermarked); define record fields from them |
 | **2. Core** | `/api/extract-record` with Lumen AI + Zod; corrections route | `/api/detect-fields` (Gemini); coordinate conversion; overlay preview | Record builder + review screen; IndexedDB save | Pitch deck skeleton; SDG + partner slide |
 | **3. Fill** | `/api/map-fields` with statuses; formSpecific logic | Export filled PDF; checkbox drawing | Final check screen (🟡/🔴 list), green collapse | Rehearse demo with real outputs |
-| **4. Polish** | Caching + fallbacks; timeouts | Drag/resize answers; signature placement | Ate Fill SVG + speech; celebration | Record backup demo video |
+| **4. Polish** | Caching + fallbacks; timeouts | Drag/resize answers; signature placement | Phil SVG + speech; celebration | Record backup demo video |
 | **5. Freeze** | Bug fixes only | Bug fixes only | Bug fixes only | Final rehearsal ×3 |
 
 **Milestone gates**
@@ -352,5 +352,5 @@ Assumes a team of 4; adjust to your team.
 1. Do we have the **Lumen API key + secret** and an **AI Chat instance** created in the Organization Portal?
 2. Does Lumen OCR return **word coordinates** with `IncludeWords=true`? (Test first thing.)
 3. Are the SSS E-1 and Pag-IBIG forms **fillable or flat**? (Check when downloaded.)
-4. Final name: **Pirma Lang** (alternatives: Fill-ipino, PakiFill).
+4. Final name: **PaPhil** (alternatives: Fill-ipino, PakiFill).
 5. Team size and who owns which column of the build plan.

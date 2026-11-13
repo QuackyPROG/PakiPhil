@@ -29,7 +29,7 @@ test("sample record survives reload, learns missing answers, and exports two for
   await expect(page.getByRole("heading", { name: "All checked. Pirma na lang!" })).toBeVisible();
   const secondDownload = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download filled PDF" }).click();
-  expect((await secondDownload).suggestedFilename()).toBe("pirma-lang-filled.pdf");
+  expect((await secondDownload).suggestedFilename()).toBe("paphil-filled.pdf");
   expect(failures).toEqual([]);
 });
 test("mobile home fits viewport and file type errors are actionable", async ({ page }) => {
@@ -45,7 +45,7 @@ test("edited extracted sample values are saved and empty edits are rejected", as
   await page.getByRole("button", { name: "Gawin ang record ko" }).click();
   await page.getByRole("button", { name: "Try a sample ID", exact: true }).click();
   await page.getByRole("button", { name: "Extract record with Lumen AI" }).click();
-  const name = page.locator("label").filter({ has: page.getByText("firstName", { exact: true }) }).getByRole("textbox");
+  const name = page.locator("label").filter({ has: page.getByText("First name", { exact: true }) }).getByRole("textbox");
   await name.fill(""); await name.press("Tab");
   await expect(page.locator(".error[role=alert]")).toContainText("Enter a value");
   await expect(name).toHaveValue("Juan");

@@ -18,8 +18,8 @@ export function OcrReview({ pages, documentId, onChange, onBusyChange }: { pages
     } catch (error) { setMessage((error as Error).message); return false; }
     finally { setBusy(false); onBusyChange(false); }
   }
-  return <details className="card"><summary>Review OCR words · correct Lumen’s reading</summary>
-    <p className="muted">Edit a word, then leave the box to send its correction. Extract your record after corrections finish.</p>
+  return <details className="card"><summary>See what Lumen OCR read ({pages.reduce((n, p) => n + p.words.length, 0)} words)</summary>
+    <p className="muted">Spot a misread word? Fix it here and leave the box; the correction goes back to Lumen.</p>
     {pages.map(page => <section key={page.number}><h3>Page {page.number}</h3><p className="ocr-text">{page.text}</p><div className="word-grid">
       {page.words.map(word => <label key={`${word.index}-${word.text}`}><small>Word {word.index}</small><input aria-label={`Page ${page.number} word ${word.index}`} defaultValue={word.text} disabled={busy} onBlur={async e => { const input = e.currentTarget; if (!await correct(page, word.index, input.value)) input.value = word.text; }} /></label>)}
     </div></section>)}<p role="status">{busy ? "Sending correction…" : message}</p>

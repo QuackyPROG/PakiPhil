@@ -1,2 +1,2 @@
-import { PirmaApp } from "@/components/pirma-app";
-export default function Home() { return <PirmaApp />; }
+import { PaPhilApp } from "@/components/paphil-app";
+export default function Home() { return <PaPhilApp />; }

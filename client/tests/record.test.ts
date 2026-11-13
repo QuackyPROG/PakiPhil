@@ -66,3 +66,13 @@ test("invalid calendar dates never produce a computed age", () => {
   const record = putField(emptyRecord(), "core.birthDate", makeValue("2004-02-31"));
   assert.equal(computed(record)["computed.age"], undefined);
 });
+test("saving a cleared signature pad removes the saved signature", async () => {
+  const { saveSignature } = await import("../lib/signature");
+  const png = "data:image/png;base64,AAAA";
+  const signed = saveSignature(emptyRecord(), png);
+  assert.equal(signed.assets.signaturePng, png);
+  const cleared = saveSignature(signed, null);
+  assert.equal(cleared.assets.signaturePng, undefined);
+  assert.equal("signaturePng" in cleared.assets, false);
+  assert.deepEqual(recordSchema.parse(cleared), cleared);
+});

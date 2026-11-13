@@ -14,7 +14,7 @@ export function download(data: Blob, name: string) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 export function exportRecord(record: PersonalRecord) {
-  download(new Blob([JSON.stringify(record, null, 2)], { type: "application/json" }), "pirma-lang-record.json");
+  download(new Blob([JSON.stringify(record, null, 2)], { type: "application/json" }), "paphil-record.json");
 }
 export async function importRecord(file: File) {
   if (file.size > 10 * 1024 * 1024) throw new Error("Record must be under 10 MB.");

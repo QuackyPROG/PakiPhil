@@ -9,6 +9,10 @@ import { makeValue, type FieldValue } from "@/lib/models";
 import { extractionSchema, type Extraction } from "@/lib/extraction";
 import type { OcrPage } from "@/lib/ocr";
 import { detectE1, extractE1, scanE1, E1_DOCUMENT_ID, type E1Text } from "@/lib/demo-e1";
+import { useMood } from "./mascot";
+import { Pipeline } from "./ui/pipeline";
+import { IconCheck, IconSparkle } from "./ui/icons";
+import { prettyKey } from "./ui/labels";
 export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue][]) => Promise<void> }) {
   const [file, setFile] = useState<File>(); const [documentId, setId] = useState("");
   const [pages, setPages] = useState<OcrPage[]>([]); const [fields, setFields] = useState<Extraction["fields"]>([]);
@@ -94,14 +98,17 @@ export function RecordBuilder({ onSave }: { onSave: (fields: [string, FieldValue
     } catch (error) { setError((error as Error).message); }
     finally { setBusy(false); }
   }
-  return <section className="stack"><div><span className="eyebrow">01 / ANG RECORD MO</span><h2>Scan once. Reuse every time.</h2><p className="muted">Add an ID or document, review Lumen’s reading, then save the details you confirm.</p></div>
-    <Upload disabled={busy} onFile={f => void read(f)} title="Add an ID or document" />
-    <div className="actions"><button disabled={busy} onClick={() => { setId("demo"); setPages(structuredClone(demoPages)); setFields([]); setFile(undefined); setProgress("SAMPLE DEMO — no API calls. Review the sample words, then extract."); }}>Try a sample ID</button><button onClick={async () => download(await sampleId(), "sample-id.pdf")}>Download sample ID</button><button onClick={async () => download(await sampleBirthCertificate(), "sample-birth-certificate.pdf")}>Sample birth certificate</button></div>
-    <p role="status">{progress}</p>{error && <p className="error" role="alert">{error}</p>}
+  useMood(progress, error, { pose: "Happy", line: "I-upload ang ID mo, sige!", detail: "PDF o litrato, ako na ang bahala." });
+  const reading = busy && !pages.length;
+  return <section className="stack">
+    <div className="section-head"><h2>Scan once. Reuse every time.</h2><p>Add an ID or a filled form. Lumen reads it, you check the details, and they’re saved for every form after this.</p></div>
+    {!fields.length && !pages.length && <><Upload disabled={busy} onFile={f => void read(f)} title={reading ? "Reading your document…" : "Drop an ID or document"} />
+      <div className="samples"><span>No document handy?</span><button disabled={busy} onClick={() => { setId("demo"); setPages(structuredClone(demoPages)); setFields([]); setFile(undefined); setProgress("SAMPLE DEMO — no API calls. Review the sample words, then extract."); }}>Try a sample ID</button><button onClick={async () => download(await sampleId(), "sample-id.pdf")}>Download sample ID</button><button onClick={async () => download(await sampleBirthCertificate(), "sample-birth-certificate.pdf")}>Sample birth certificate</button></div></>}
+    <Pipeline progress={progress} kind="scan" />{error && <p className="error" role="alert">{error}</p>}
     {documentId && !documentId.startsWith("demo") && !busy && <div className="actions"><button onClick={() => void read()}>Resume reading</button><button onClick={() => void read(undefined, true)}>Retry failed OCR</button></div>}
-    {!!pages.length && <><OcrReview pages={pages} documentId={documentId} onBusyChange={setBusy} onChange={next => { setPages(next); setFields([]); }} /><button className="primary" disabled={busy} onClick={() => void extract()}>Extract record with Lumen AI</button></>}
-    {!!fields.length && <div className="card stack"><h3>Silip muna — confirm extracted values</h3><p className="muted">Edit a value and leave the box to send the correction to Lumen. Use the source words above for larger changes.</p>
-      {fields.map((field, i) => <label key={i}><span>{field.key.replace(/^core\./, "")}</span><input key={field.value} defaultValue={field.value} disabled={busy} onBlur={async e => { const input = e.currentTarget; if (!await editValue(i, input.value)) input.value = field.value; }} /><small>{field.reason ? `⚠ ${field.reason} ${field.suggestion ?? ""}` : "Review against your document"}</small><button onClick={() => setFields(fields.filter((_, n) => n !== i))}>Exclude</button></label>)}
-      <button className="primary" disabled={busy} onClick={() => void save()}>Confirm and save {fields.length} values</button></div>}
+    {!!pages.length && !fields.length && <><OcrReview pages={pages} documentId={documentId} onBusyChange={setBusy} onChange={next => { setPages(next); setFields([]); }} /><div className="actions"><button className="primary big" disabled={busy} onClick={() => void extract()}><IconSparkle />Extract record with Lumen AI</button></div></>}
+    {!!fields.length && <div className="stack"><div className="section-head"><h3>Silip muna: check what Lumen found</h3><p>Fix anything that looks off. Changes go back to Lumen so the source stays traceable.</p></div>
+      <div className="extracted">{fields.map((field, i) => <label className="value" key={i}><span>{prettyKey(field.key)}</span><input className="value-input" key={field.value} defaultValue={field.value} disabled={busy} onBlur={async e => { const input = e.currentTarget; if (!await editValue(i, input.value)) input.value = field.value; }} /><button type="button" onClick={() => setFields(fields.filter((_, n) => n !== i))}>Exclude</button>{field.reason && <small>{field.reason} {field.suggestion ?? ""}</small>}</label>)}</div>
+      <div className="save-bar"><strong>{fields.length} details ready</strong><button className="primary big" disabled={busy} onClick={() => void save()}><IconCheck />Confirm and save {fields.length} values</button></div></div>}
   </section>;
 }

@@ -1,4 +1,4 @@
-# Pirma Lang implementation
+# PaPhil implementation
 
 Based on the November 13, 2026 hackathon PRD. Ship the core demo before optional polish.
 Each completed related task gets its own commit; aim for at most 100 source lines per commit.

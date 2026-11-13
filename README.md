@@ -1,4 +1,4 @@
-# Pirma Lang
+# PaPhil
 
 “Kami na bahala sa form. Pirma ka na lang.”
 
@@ -30,7 +30,7 @@ Never commit credentials or use a `NEXT_PUBLIC_` prefix for provider keys.
   OCR-backed label cleaning, and blank-layout caching.
 - Green/yellow/red review, remembered answers, computed age/full name/today,
   page preview, drag/resize positioning, PDF export, signature and square photo.
-- Ate Fill illustration, optional speech output, field explanation, responsive layout.
+- Phil illustration, optional speech output, field explanation, responsive layout.
 
 ## Sample demo
 

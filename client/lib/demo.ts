@@ -17,7 +17,7 @@ async function samplePdf(title: string, lines: string[]) {
   lines.forEach((line,i) => page.drawText(line, { x: 45, y: 685-i*34, size: 12, font }));
   return new File([new Uint8Array(await pdf.save())], `${title.toLowerCase().replaceAll(" ", "-")}.pdf`, { type: "application/pdf" });
 }
-export async function sampleId() { return samplePdf("Pirma Lang Sample ID", demoFields.map(([k,v]) => `${k.replace("core.", "")}: ${v}`)); }
+export async function sampleId() { return samplePdf("PaPhil Sample ID", demoFields.map(([k,v]) => `${k.replace("core.", "")}: ${v}`)); }
 export async function sampleBirthCertificate() { return samplePdf("Sample Birth Certificate", ["First name: Juan", "Last name: Dela Cruz", "Mother maiden name: Maria Santos", "Father name: Jose Dela Cruz"]); }
 export async function sampleForm(record: PersonalRecord, second = false): Promise<FormPage[]> {
   const labels = ["First name", "Middle name", "Last name", "Birth date", "Sex", "Citizenship", "City", "Barangay", "Mobile", "SSS number", "Birth place", "Occupation"];
