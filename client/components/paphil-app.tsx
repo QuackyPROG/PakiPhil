@@ -66,7 +66,7 @@ function App() {
       {screen === "home" && <>
         <section className="hero">
           <div>
-            <h1>Ikaw ang bida. Kami sa form.</h1>
+            <h1>BAWAS SULAT, BAWAS HIRAP</h1>
             <p className="hero-copy">Scan your IDs once. Bring any blank government form. We fill in everything we already know, and you only answer what’s missing.</p>
             <div className="actions">
               <button className="primary big" onClick={() => go("scan")}>{count ? "Add another document" : "Gawin ang record ko"}</button>
