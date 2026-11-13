@@ -14,12 +14,10 @@ All you do is sign.
 ## Showcase
 
 <p align="center">
-  <a href="docs/showcase/PaPhil%20Demo.mp4">
-    <img src="docs/showcase/PaPhil%20Demo.jpg" alt="PaPhil Demo video: click to play" width="720" />
-  </a>
+  <img src="docs/showcase/PaPhil%20Demo.gif" alt="PaPhil Demo" width="720" />
 </p>
 
-<p align="center"><b><a href="docs/showcase/PaPhil%20Demo.mp4">▶ Watch the PaPhil Demo</a></b></p>
+<p align="center"><a href="docs/showcase/PaPhil%20Demo.mp4?raw=true">Download the PaPhil Demo with sound (MP4)</a></p>
 
 ## The pain
 
