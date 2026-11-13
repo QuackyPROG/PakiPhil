@@ -10,6 +10,13 @@
 Scan your IDs once. Every form after that fills itself.<br />
 All you do is sign.
 </p>
+## Showcase
+<p align="center">
+  <a href="docs/showcase/PaPhil%20Demo.mp4">
+    <img src="docs/showcase/PaPhil%20Demo.jpg" alt="PaPhil Demo video: click to play" width="720" />
+  </a>
+</p>
+<p align="center"><b><a href="docs/showcase/PaPhil%20Demo.mp4">▶ Watch the PaPhil Demo</a></b></p>
 
 ## The pain
 
